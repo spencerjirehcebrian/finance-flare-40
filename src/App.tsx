@@ -13,11 +13,23 @@ import Budget from "./pages/Budget";
 import Accounts from "./pages/Accounts";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
+import CameraModal from "./components/CameraModal";
+import { useToast } from "./hooks/use-toast";
 
 const queryClient = new QueryClient();
 
 const App = () => {
   const [isTransactionModalOpen, setIsTransactionModalOpen] = useState(false);
+  const [isCameraModalOpen, setIsCameraModalOpen] = useState(false);
+  const { toast } = useToast();
+
+  const handleCaptureReceipt = (imageData: string) => {
+    toast({
+      title: "Smart Scan Completed",
+      description: "Transaction details captured successfully.",
+    });
+    setIsCameraModalOpen(false);
+  };
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -36,12 +48,19 @@ const App = () => {
               </Routes>
               
               <BottomNavigation 
-                onAddPress={() => setIsTransactionModalOpen(true)} 
+                onAddPress={() => setIsTransactionModalOpen(true)}
+                onCameraPress={() => setIsCameraModalOpen(true)}
               />
               
               <TransactionModal 
                 isOpen={isTransactionModalOpen} 
                 onClose={() => setIsTransactionModalOpen(false)} 
+              />
+
+              <CameraModal 
+                isOpen={isCameraModalOpen} 
+                onClose={() => setIsCameraModalOpen(false)} 
+                onCapture={handleCaptureReceipt}
               />
             </div>
           </BrowserRouter>
