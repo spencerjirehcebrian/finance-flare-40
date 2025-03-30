@@ -1,45 +1,36 @@
 
-import React, { useState } from 'react';
-import { useFinance } from '@/context/FinanceContext';
-import { TransactionType } from '@/types/finance';
-import { Check, X } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
+import React, { useState } from 'react'
+import { View, Text, TextInput, TouchableOpacity } from 'react-native'
+import { Check, X } from 'lucide-react'
+import { useFinance } from '@/context/FinanceContext'
+import { TransactionType } from '@/types/finance'
+import { toast } from 'react-native-hot-toast'
+import { tw } from '@/utils/tailwind'
 
 interface TransactionFormProps {
-  onClose: () => void;
+  onClose: () => void
 }
 
 const TransactionForm: React.FC<TransactionFormProps> = ({ onClose }) => {
-  const { addTransaction } = useFinance();
-  const { toast } = useToast();
+  const { addTransaction } = useFinance()
   
-  const [amount, setAmount] = useState('');
-  const [description, setDescription] = useState('');
-  const [category, setCategory] = useState('');
-  const [type, setType] = useState<TransactionType>('expense');
-  const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
+  const [amount, setAmount] = useState('')
+  const [description, setDescription] = useState('')
+  const [category, setCategory] = useState('')
+  const [type, setType] = useState<TransactionType>('expense')
+  const [date, setDate] = useState(new Date().toISOString().split('T')[0])
   
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    
+  const handleSubmit = () => {
     if (!amount || !description || !category) {
-      toast({
-        title: "Error",
-        description: "Please fill in all required fields",
-        variant: "destructive",
-      });
-      return;
+      toast.error("Please fill in all required fields")
+      return
     }
     
-    const numAmount = parseFloat(amount);
+    const numAmount = parseFloat(amount)
     
     if (isNaN(numAmount) || numAmount <= 0) {
-      toast({
-        title: "Error",
-        description: "Please enter a valid amount",
-        variant: "destructive",
-      });
-      return;
+      toast.error("Please enter a valid amount")
+      return
     }
     
     addTransaction({
@@ -48,102 +39,89 @@ const TransactionForm: React.FC<TransactionFormProps> = ({ onClose }) => {
       category,
       type,
       date,
-    });
+    })
     
-    toast({
-      title: "Success",
-      description: "Transaction added successfully",
-    });
-    
-    onClose();
-  };
+    toast.success("Transaction added successfully")
+    onClose()
+  }
   
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <h2 className="text-xl font-bold mb-4">Add Transaction</h2>
+    <View style={tw`space-y-4`}>
+      <Text style={tw`text-xl font-bold mb-4`}>Add Transaction</Text>
       
-      <div className="flex rounded-lg overflow-hidden mb-4">
-        <button
-          type="button"
-          className={`flex-1 py-2 text-center ${type === 'expense' ? 'bg-finance-expense text-white' : 'bg-gray-200'}`}
-          onClick={() => setType('expense')}
+      <View style={tw`flex-row rounded-lg overflow-hidden mb-4`}>
+        <TouchableOpacity
+          style={tw`flex-1 py-2 items-center ${type === 'expense' ? 'bg-finance-expense' : 'bg-gray-200'}`}
+          onPress={() => setType('expense')}
         >
-          Expense
-        </button>
-        <button
-          type="button"
-          className={`flex-1 py-2 text-center ${type === 'income' ? 'bg-finance-income text-white' : 'bg-gray-200'}`}
-          onClick={() => setType('income')}
+          <Text style={tw`${type === 'expense' ? 'text-white' : 'text-gray-700'}`}>Expense</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={tw`flex-1 py-2 items-center ${type === 'income' ? 'bg-finance-income' : 'bg-gray-200'}`}
+          onPress={() => setType('income')}
         >
-          Income
-        </button>
-      </div>
+          <Text style={tw`${type === 'income' ? 'text-white' : 'text-gray-700'}`}>Income</Text>
+        </TouchableOpacity>
+      </View>
       
-      <div>
-        <label className="block text-sm font-medium mb-1">Amount</label>
-        <input
-          type="number"
-          step="0.01"
+      <View>
+        <Text style={tw`text-sm font-medium mb-1`}>Amount</Text>
+        <TextInput
+          keyboardType="numeric"
           placeholder="0.00"
           value={amount}
-          onChange={(e) => setAmount(e.target.value)}
-          className="w-full p-2 border rounded-lg"
-          required
+          onChangeText={setAmount}
+          style={tw`w-full p-2 border border-gray-300 rounded-lg`}
         />
-      </div>
+      </View>
       
-      <div>
-        <label className="block text-sm font-medium mb-1">Description</label>
-        <input
-          type="text"
+      <View>
+        <Text style={tw`text-sm font-medium mb-1`}>Description</Text>
+        <TextInput
           placeholder="What was this for?"
           value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          className="w-full p-2 border rounded-lg"
-          required
+          onChangeText={setDescription}
+          style={tw`w-full p-2 border border-gray-300 rounded-lg`}
         />
-      </div>
+      </View>
       
-      <div>
-        <label className="block text-sm font-medium mb-1">Category</label>
-        <input
-          type="text"
+      <View>
+        <Text style={tw`text-sm font-medium mb-1`}>Category</Text>
+        <TextInput
           placeholder="e.g. Food, Transportation"
           value={category}
-          onChange={(e) => setCategory(e.target.value)}
-          className="w-full p-2 border rounded-lg"
-          required
+          onChangeText={setCategory}
+          style={tw`w-full p-2 border border-gray-300 rounded-lg`}
         />
-      </div>
+      </View>
       
-      <div>
-        <label className="block text-sm font-medium mb-1">Date</label>
-        <input
-          type="date"
+      <View>
+        <Text style={tw`text-sm font-medium mb-1`}>Date</Text>
+        <TextInput
           value={date}
-          onChange={(e) => setDate(e.target.value)}
-          className="w-full p-2 border rounded-lg"
-          required
+          onChangeText={setDate}
+          style={tw`w-full p-2 border border-gray-300 rounded-lg`}
         />
-      </div>
+      </View>
       
-      <div className="flex space-x-2 pt-4">
-        <button
-          type="button"
-          className="flex-1 py-2 border border-gray-300 rounded-lg flex items-center justify-center"
-          onClick={onClose}
+      <View style={tw`flex-row space-x-2 pt-4`}>
+        <TouchableOpacity
+          style={tw`flex-1 py-2 border border-gray-300 rounded-lg flex-row items-center justify-center`}
+          onPress={onClose}
         >
-          <X className="w-4 h-4 mr-1" /> Cancel
-        </button>
-        <button
-          type="submit"
-          className="flex-1 py-2 bg-finance-primary text-white rounded-lg flex items-center justify-center"
+          <X size={16} style={tw`mr-1`} />
+          <Text>Cancel</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={tw`flex-1 py-2 bg-finance-primary rounded-lg flex-row items-center justify-center`}
+          onPress={handleSubmit}
         >
-          <Check className="w-4 h-4 mr-1" /> Save
-        </button>
-      </div>
-    </form>
-  );
-};
+          <Check size={16} style={tw`mr-1 text-white`} />
+          <Text style={tw`text-white`}>Save</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  )
+}
 
-export default TransactionForm;
+export default TransactionForm

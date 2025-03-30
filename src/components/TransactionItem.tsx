@@ -1,50 +1,52 @@
 
-import React from 'react';
-import { Transaction } from '@/types/finance';
-import { formatCurrency, formatShortDate } from '@/utils/formatters';
-import { ArrowUpRight, ArrowDownRight, Receipt } from 'lucide-react';
+import React from 'react'
+import { View, Text, TouchableOpacity } from 'react-native'
+import { ArrowUpRight, ArrowDownRight, Receipt } from 'lucide-react'
+import { Transaction } from '@/types/finance'
+import { formatCurrency, formatShortDate } from '@/utils/formatters'
+import { tw } from '@/utils/tailwind'
 
 interface TransactionItemProps {
-  transaction: Transaction;
-  onPress?: () => void;
+  transaction: Transaction
+  onPress?: () => void
 }
 
 const TransactionItem: React.FC<TransactionItemProps> = ({ transaction, onPress }) => {
-  const { type, amount, description, category, date, receiptImage } = transaction;
+  const { type, amount, description, category, date, receiptImage } = transaction
   
-  const isExpense = type === 'expense';
-  const isIncome = type === 'income';
+  const isExpense = type === 'expense'
+  const isIncome = type === 'income'
   
   return (
-    <div 
-      className="transaction-item" 
-      onClick={onPress}
+    <TouchableOpacity 
+      style={tw`flex-row items-center justify-between p-3 border-b border-gray-100`} 
+      onPress={onPress}
     >
-      <div className="flex items-center">
-        <div className={`icon-container ${isExpense ? 'bg-finance-expense/10' : 'bg-finance-income/10'} mr-3`}>
+      <View style={tw`flex-row items-center`}>
+        <View style={tw`w-10 h-10 rounded-full items-center justify-center mr-3 ${isExpense ? 'bg-finance-expense/10' : 'bg-finance-income/10'}`}>
           {isExpense ? (
-            <ArrowDownRight className="w-5 h-5 text-finance-expense" />
+            <ArrowDownRight size={20} color="#ef4444" />
           ) : (
-            <ArrowUpRight className="w-5 h-5 text-finance-income" />
+            <ArrowUpRight size={20} color="#22c55e" />
           )}
-        </div>
+        </View>
         
-        <div>
-          <p className="font-medium">{description}</p>
-          <p className="text-sm text-gray-500">{category} • {formatShortDate(date)}</p>
-        </div>
-      </div>
+        <View>
+          <Text style={tw`font-medium`}>{description}</Text>
+          <Text style={tw`text-sm text-gray-500`}>{category} • {formatShortDate(date)}</Text>
+        </View>
+      </View>
       
-      <div className="flex items-center">
-        <p className={isExpense ? 'expense-amount' : 'income-amount'}>
+      <View style={tw`flex-row items-center`}>
+        <Text style={tw`${isExpense ? 'text-finance-expense' : 'text-finance-income'} font-medium`}>
           {isExpense ? '-' : '+'}{formatCurrency(amount)}
-        </p>
+        </Text>
         {receiptImage && (
-          <Receipt className="w-4 h-4 ml-2 text-gray-400" />
+          <Receipt size={16} style={tw`ml-2 text-gray-400`} />
         )}
-      </div>
-    </div>
-  );
-};
+      </View>
+    </TouchableOpacity>
+  )
+}
 
-export default TransactionItem;
+export default TransactionItem
