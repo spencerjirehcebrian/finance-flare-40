@@ -1,59 +1,54 @@
 
-import React, { useState } from 'react'
-import { StatusBar, SafeAreaView } from 'react-native'
-import { NavigationContainer } from '@react-navigation/native'
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs'
-import { Toaster } from 'react-native-hot-toast'
-import { FinanceProvider } from '@/context/FinanceContext'
-import { tw } from '@/utils/tailwind'
+import { useState } from "react";
+import { Toaster } from "@/components/ui/toaster";
+import { Toaster as Sonner } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import BottomNavigation from "@/components/BottomNavigation";
+import TransactionModal from "@/components/TransactionModal";
+import { FinanceProvider } from "@/context/FinanceContext";
+import Home from "./pages/Home";
+import Budget from "./pages/Budget";
+import Accounts from "./pages/Accounts";
+import Settings from "./pages/Settings";
+import NotFound from "./pages/NotFound";
 
-// Screens
-import HomeScreen from './screens/HomeScreen'
-import BudgetScreen from './screens/BudgetScreen'
-import AccountsScreen from './screens/AccountsScreen'
-import SettingsScreen from './screens/SettingsScreen'
-
-// Components
-import TabBar from './components/TabBar'
-import TransactionModal from './components/TransactionModal'
-
-const Tab = createBottomTabNavigator()
+const queryClient = new QueryClient();
 
 const App = () => {
-  const [isTransactionModalOpen, setIsTransactionModalOpen] = useState(false)
+  const [isTransactionModalOpen, setIsTransactionModalOpen] = useState(false);
 
   return (
-    <NavigationContainer>
-      <FinanceProvider>
-        <StatusBar barStyle="dark-content" />
-        <SafeAreaView style={tw`flex-1 bg-background`}>
-          <Tab.Navigator
-            tabBar={(props) => (
-              <TabBar
-                {...props}
-                onAddPress={() => setIsTransactionModalOpen(true)}
-              />
-            )}
-            screenOptions={{
-              headerShown: false,
-            }}
-          >
-            <Tab.Screen name="Home" component={HomeScreen} />
-            <Tab.Screen name="Budget" component={BudgetScreen} />
-            <Tab.Screen name="Accounts" component={AccountsScreen} />
-            <Tab.Screen name="Settings" component={SettingsScreen} />
-          </Tab.Navigator>
-          
-          <TransactionModal 
-            isOpen={isTransactionModalOpen} 
-            onClose={() => setIsTransactionModalOpen(false)} 
-          />
-          
+    <QueryClientProvider client={queryClient}>
+      <TooltipProvider>
+        <FinanceProvider>
           <Toaster />
-        </SafeAreaView>
-      </FinanceProvider>
-    </NavigationContainer>
-  )
-}
+          <Sonner />
+          <BrowserRouter>
+            <div className="app-container pb-16">
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/budget" element={<Budget />} />
+                <Route path="/accounts" element={<Accounts />} />
+                <Route path="/settings" element={<Settings />} />
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+              
+              <BottomNavigation 
+                onAddPress={() => setIsTransactionModalOpen(true)} 
+              />
+              
+              <TransactionModal 
+                isOpen={isTransactionModalOpen} 
+                onClose={() => setIsTransactionModalOpen(false)} 
+              />
+            </div>
+          </BrowserRouter>
+        </FinanceProvider>
+      </TooltipProvider>
+    </QueryClientProvider>
+  );
+};
 
-export default App
+export default App;

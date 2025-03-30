@@ -1,30 +1,28 @@
 
-import React from 'react'
-import { View, Text } from 'react-native'
-import { useFinance } from '@/context/FinanceContext'
-import { formatCurrency } from '@/utils/formatters'
-import { tw } from '@/utils/tailwind'
+import React from 'react';
+import { useFinance } from '@/context/FinanceContext';
+import { formatCurrency } from '@/utils/formatters';
 
 const BalanceCard: React.FC = () => {
-  const { totalBalance, totalIncome, totalExpenses } = useFinance()
+  const { totalBalance, totalIncome, totalExpenses } = useFinance();
 
   return (
-    <View style={tw`bg-gradient-to-br from-finance-primary to-finance-accent rounded-xl p-4 shadow-lg mb-6`}>
-      <Text style={tw`text-lg font-medium text-white opacity-90 mb-1`}>Total Balance</Text>
-      <Text style={tw`text-3xl font-bold text-white mb-4`}>{formatCurrency(totalBalance)}</Text>
+    <div className="card-balance mb-6">
+      <h2 className="text-lg font-medium opacity-90 mb-1">Total Balance</h2>
+      <p className="text-3xl font-bold mb-4">{formatCurrency(totalBalance)}</p>
       
-      <View style={tw`flex-row justify-between`}>
-        <View style={tw`flex-1`}>
-          <Text style={tw`text-white opacity-80`}>Income</Text>
-          <Text style={tw`text-xl font-medium text-white`}>{formatCurrency(totalIncome)}</Text>
-        </View>
-        <View style={tw`flex-1`}>
-          <Text style={tw`text-white opacity-80`}>Expenses</Text>
-          <Text style={tw`text-xl font-medium text-white`}>{formatCurrency(totalExpenses)}</Text>
-        </View>
-      </View>
-    </View>
-  )
-}
+      <div className="grid grid-cols-2 gap-4 text-sm">
+        <div>
+          <p className="opacity-80">Income</p>
+          <p className="text-xl font-medium">{formatCurrency(totalIncome)}</p>
+        </div>
+        <div>
+          <p className="opacity-80">Expenses</p>
+          <p className="text-xl font-medium">{formatCurrency(totalExpenses)}</p>
+        </div>
+      </div>
+    </div>
+  );
+};
 
-export default BalanceCard
+export default BalanceCard;
