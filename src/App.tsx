@@ -14,20 +14,17 @@ import Accounts from "./pages/Accounts";
 import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 import CameraModal from "./components/CameraModal";
-import { useToast } from "./hooks/use-toast";
 
+// Create the query client outside of the component
 const queryClient = new QueryClient();
 
 const App = () => {
   const [isTransactionModalOpen, setIsTransactionModalOpen] = useState(false);
   const [isCameraModalOpen, setIsCameraModalOpen] = useState(false);
-  const { toast } = useToast();
 
   const handleCaptureReceipt = (imageData: string) => {
-    toast({
-      title: "Smart Scan Completed",
-      description: "Transaction details captured successfully.",
-    });
+    // Using toast directly here was causing issues
+    console.log("Smart Scan Completed: Transaction details captured successfully");
     setIsCameraModalOpen(false);
   };
 
