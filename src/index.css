@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -35,19 +36,12 @@
     --radius: 0.5rem;
 
     --sidebar-background: 0 0% 98%;
-
     --sidebar-foreground: 240 5.3% 26.1%;
-
     --sidebar-primary: 240 5.9% 10%;
-
     --sidebar-primary-foreground: 0 0% 98%;
-
     --sidebar-accent: 240 4.8% 95.9%;
-
     --sidebar-accent-foreground: 240 5.9% 10%;
-
     --sidebar-border: 220 13% 91%;
-
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
@@ -97,5 +91,59 @@
 
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+@layer components {
+  .app-container {
+    @apply max-w-md mx-auto h-screen flex flex-col;
+  }
+  
+  .page-container {
+    @apply px-4 py-6 flex-1 overflow-y-auto;
+  }
+  
+  .card-balance {
+    @apply bg-gradient-to-br from-finance-primary to-finance-accent text-white rounded-xl p-4 shadow-lg;
+  }
+  
+  .transaction-item {
+    @apply flex items-center justify-between p-3 border-b border-gray-100 hover:bg-gray-50 transition-colors;
+  }
+  
+  .budget-bar {
+    @apply h-2 rounded-full bg-gray-200 overflow-hidden;
+  }
+  
+  .budget-progress {
+    @apply h-full rounded-full;
+  }
+  
+  .expense-amount {
+    @apply text-finance-expense font-medium;
+  }
+  
+  .income-amount {
+    @apply text-finance-income font-medium;
+  }
+  
+  .icon-container {
+    @apply flex items-center justify-center w-10 h-10 rounded-full;
+  }
+  
+  .nav-icon {
+    @apply w-6 h-6;
+  }
+  
+  .fab-button {
+    @apply fixed bottom-20 right-6 w-14 h-14 rounded-full bg-finance-primary text-white flex items-center justify-center shadow-lg z-10;
+  }
+  
+  .modal-container {
+    @apply fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50;
+  }
+  
+  .modal-content {
+    @apply bg-white rounded-xl w-11/12 max-w-md p-6 animate-scale-in;
   }
 }
